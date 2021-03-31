@@ -20,10 +20,17 @@
 
     <!--    intent extra-->
     <string name="current_user_id">currentUserId</string>
+    <string name="category_id">categoryId</string>
     <string name="transaction_id">transactionId</string>
     <string name="recurring_transaction_id">recurring_transaction_id</string>
     <string name="amount">amount</string>
     <string name="description">description</string>
+
+    <!--    notification-->
+    <string name="notification_title">Bill</string>
+    <string name="notification_content"></string>
+    <string name="channel_name">channel</string>
+    <string name="channel_description">channel_description</string>
 
     <!--    FOR VIEW-->
 
@@ -49,22 +56,23 @@
     <string name="title_recurring_transaction">Recurring Transaction</string>
     <string name="title_transaction">Transaction</string>
     <string name="title_initialize">Setting money</string>
-    <string name="title_edit_account">Edit account</string>
+    <string name="title_edit_account">Edit account information</string>
     <string name="title_big_expense">Big Expense</string>
     <string name="title_choose_big_expense_plan">Choose a plan</string>
     <string name="title_add_savings">Add savings</string>
+    <string name="title_report">Report for %1$s</string>
 
     <!--    label text-->
     <string name="label_current_incomes">Current incomes</string>
     <string name="label_incomes_savings_ratio">Incomes savings ratio\n%1$d : %2$d</string>
-
-    <string name="tab_report_text">Text</string>
-    <string name="tab_report_line_chart">Line Chart</string>
-    <string name="tab_report_pie_chart">Pie Chart</string>
-
-    <string name="title_plan_incomes">Incomes</string>
-    <string name="title_plan_savings">Savings</string>
-    <string name="title_plan_loan">Loan</string>
+    <string name="label_tab_report_text">Text</string>
+    <string name="label_tab_report_line_chart">by date</string>
+    <string name="label_tab_report_pie_chart">by category</string>
+    <string name="label_plan_incomes">Incomes</string>
+    <string name="label_plan_savings">Savings</string>
+    <string name="label_plan_loan">Loan</string>
+    <string name="label_total_incomes">Total incomes:</string>
+    <string name="label_total_expenses">Total expenses</string>
 
     <!--    button text-->
     <string name="button_text_next">Next</string>
@@ -93,6 +101,9 @@
     <string name="hint_description">Description</string>
     <string name="hint_current_savings">Current savings</string>
     <string name="hint_salary">Salary</string>
+
+    <!--    report text-->
+    <string name="report_text_income_expense">Total Incomes: %1$s\nTotal Expenses: %2$s</string>
 
     <!--    others-->
     <string name="description_salary">Salary</string>

@@ -15,7 +15,7 @@ import com.example.p3175.activity.recurringtransaction.ManageRecurringTransactio
 import com.example.p3175.db.entity.RecurringTransaction;
 import com.example.p3175.util.Converter;
 
-@RequiresApi(api = Build.VERSION_CODES.O)
+
 public class InitializeMoneyActivity extends BaseActivity {
 
     @Override
@@ -31,7 +31,7 @@ public class InitializeMoneyActivity extends BaseActivity {
         Button buttonOK = findViewById(R.id.buttonInitialOK);
         //endregion
 
-        //region 1. BUTTON
+        //region 2. BUTTON
 
         buttonManageRecurringTransaction.setOnClickListener(v -> {
             // nav to manage salary & bill
@@ -41,17 +41,24 @@ public class InitializeMoneyActivity extends BaseActivity {
         });
 
         buttonOK.setOnClickListener(v -> {
+            String salary = editTextSalary.getText().toString();
+            String savings = editTextSavings.getText().toString();
+
             // db insert: recurring transaction
-            db.insertRecurringTransaction(new RecurringTransaction(
-                    currentUserId,
-                    Converter.stringToBigDecimal(editTextSalary.getText().toString()),
-                    1,
-                    "Salary"
-            ));
+            if (!salary.isEmpty()) {
+                db.insertRecurringTransaction(new RecurringTransaction(
+                        currentUserId,
+                        Converter.stringToBigDecimal(salary),
+                        1,
+                        "Salary"
+                ));
+            }
 
             // db update: overview
-            currentOverview.setSavings(Converter.stringToBigDecimal(editTextSavings.getText().toString()));
-            db.updateOverview(currentOverview);
+            if (!savings.isEmpty()) {
+                currentOverview.setSavings(Converter.stringToBigDecimal(savings));
+                db.updateOverview(currentOverview);
+            }
 
             // nav to main activity, unable to nav back
             Toast.makeText(this, "Account created.", Toast.LENGTH_SHORT).show();

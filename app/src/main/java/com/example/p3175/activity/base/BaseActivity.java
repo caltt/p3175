@@ -20,7 +20,7 @@ import com.example.p3175.db.entity.User;
 import java.util.ArrayList;
 import java.util.List;
 
-@RequiresApi(api = Build.VERSION_CODES.O)
+
 public class BaseActivity extends AppCompatActivity {
 
     protected static String TAG = "tttt";
@@ -33,8 +33,6 @@ public class BaseActivity extends AppCompatActivity {
     protected int currentUserId;
     protected User currentUser;
     protected Overview currentOverview;
-
-    // FIXME: currentUser & currentXXX
 
     @SuppressLint("CommitPrefEdits")
     @Override
@@ -53,9 +51,17 @@ public class BaseActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        // do get here make sure data is always updated
         getContextualData();
     }
 
+    /**
+     * Prepare data for global use.
+     *
+     * Try to get current logged in user id from shared preference.
+     * For actions between registration and login, but still need id, get from intent (id will be put as argument then)
+     * Also try to get this user's overview
+     */
     private void getContextualData() {
         currentUserId = preferences.getInt(getString(R.string.logged_in_user_id), -1);
         if (currentUserId == -1 && getIntent() != null) {

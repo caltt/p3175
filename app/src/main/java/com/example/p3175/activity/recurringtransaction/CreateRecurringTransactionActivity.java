@@ -16,7 +16,7 @@ import com.example.p3175.activity.base.BaseActivity;
 import com.example.p3175.db.entity.RecurringTransaction;
 import com.example.p3175.util.Converter;
 
-@RequiresApi(api = Build.VERSION_CODES.O)
+
 public class CreateRecurringTransactionActivity extends BaseActivity {
 
     @Override

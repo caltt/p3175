@@ -21,8 +21,9 @@ import com.example.p3175.db.entity.Overview;
 import com.example.p3175.db.entity.User;
 
 @SuppressLint("CommitPrefEdits")
-@RequiresApi(api = Build.VERSION_CODES.O)
+
 public class BaseFragment extends Fragment {
+
     protected static String TAG = "tttt";
 
     protected static FragmentActivity activity;

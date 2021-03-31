@@ -20,11 +20,11 @@ import com.example.p3175.activity.transaction.EditTransactionActivity;
 import com.example.p3175.db.entity.RecurringTransaction;
 import com.example.p3175.util.Converter;
 
-@RequiresApi(api = Build.VERSION_CODES.O)
-public class RecurringTransactionAdapter extends ListAdapter<RecurringTransaction, RecurringTransactionAdapter.RecurringTransactionViewHolder> {
-    Activity activity;
 
-    public RecurringTransactionAdapter(Activity activity) {
+public class RecurringTransactionAdapter extends ListAdapter<RecurringTransaction, RecurringTransactionAdapter.RecurringTransactionViewHolder> {
+    OnClickListener onClickListener;
+
+    public RecurringTransactionAdapter() {
         super(new DiffUtil.ItemCallback<RecurringTransaction>() {
             @Override
             public boolean areItemsTheSame(@NonNull RecurringTransaction oldItem, @NonNull RecurringTransaction newItem) {
@@ -36,8 +36,6 @@ public class RecurringTransactionAdapter extends ListAdapter<RecurringTransactio
                 return oldItem.equals(newItem);
             }
         });
-
-        this.activity = activity;
     }
 
     @NonNull
@@ -56,20 +54,19 @@ public class RecurringTransactionAdapter extends ListAdapter<RecurringTransactio
         RecurringTransaction recurringTransaction = getItem(position);
 
 
-
         // set text
         holder.textViewRecurringTransactionId.setText(String.valueOf(position + 1));
         holder.textViewRecurringTransactionDayOfMonth.setText(String.valueOf(recurringTransaction.getDayOfMonth()));
         holder.textViewRecurringTransactionDescription.setText(recurringTransaction.getDescription());
         holder.textViewRecurringTransactionAmount.setText(Converter.bigDecimalToString(recurringTransaction.getAmount()));
 
+        if (onClickListener != null) {
+            holder.itemView.setOnClickListener(v -> onClickListener.onClick(recurringTransaction.getId()));
+        }
+    }
 
-        // click to edit
-        holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(activity, EditRecurringTransactionActivity.class);
-            intent.putExtra(activity.getString(R.string.recurring_transaction_id), recurringTransaction.getId());
-            activity.startActivity(intent);
-        });
+    public void setOnClickListener(OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
     }
 
     static class RecurringTransactionViewHolder extends RecyclerView.ViewHolder {

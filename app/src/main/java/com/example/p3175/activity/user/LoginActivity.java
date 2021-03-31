@@ -16,7 +16,6 @@ import com.example.p3175.activity.main.MainActivity;
 import com.example.p3175.db.entity.User;
 import com.example.p3175.util.Converter;
 
-@RequiresApi(api = Build.VERSION_CODES.O)
 public class LoginActivity extends BaseActivity {
 
     @Override

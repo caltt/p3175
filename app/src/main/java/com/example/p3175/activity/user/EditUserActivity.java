@@ -16,7 +16,7 @@ import com.example.p3175.R;
 import com.example.p3175.activity.base.BaseActivity;
 import com.example.p3175.util.Converter;
 
-@RequiresApi(api = Build.VERSION_CODES.O)
+
 public class EditUserActivity extends BaseActivity {
 
     boolean isPasswordValid, isEmailValid;
@@ -29,6 +29,7 @@ public class EditUserActivity extends BaseActivity {
         //region 0. VIEW
 
         TextView textViewTitle = findViewById(R.id.textViewEditUserTitle);
+        textViewTitle.setText(getString(R.string.title_edit_account));
         EditText editTextEmail = findViewById(R.id.editTextEditUserEmail);
         editTextEmail.setEnabled(false);
         EditText editTextPassword = findViewById(R.id.editTextEditUserPassword);

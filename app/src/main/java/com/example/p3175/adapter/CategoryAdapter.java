@@ -21,11 +21,9 @@ import com.example.p3175.db.entity.Category;
 import java.util.List;
 
 public class CategoryAdapter extends ListAdapter<Category, CategoryAdapter.CategoryViewHolder> {
-    Activity activity;
-    boolean isForTransaction;
     OnClickListener onClickListener;
 
-    public CategoryAdapter(Activity activity, boolean isForTransaction) {
+    public CategoryAdapter() {
         super(new DiffUtil.ItemCallback<Category>() {
             @Override
             public boolean areItemsTheSame(@NonNull Category oldItem, @NonNull Category newItem) {
@@ -38,8 +36,6 @@ public class CategoryAdapter extends ListAdapter<Category, CategoryAdapter.Categ
             }
         });
 
-        this.activity = activity;
-        this.isForTransaction = isForTransaction;
     }
 
     @NonNull
@@ -55,21 +51,13 @@ public class CategoryAdapter extends ListAdapter<Category, CategoryAdapter.Categ
 
     @Override
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
-        Category user = getItem(position);
+        Category category = getItem(position);
 
-        holder.textViewCategoryName.setText(user.getName());
+        holder.textViewCategoryName.setText(category.getName());
 
-        holder.itemView.setOnClickListener(v -> {
-            int categoryId = user.getId();
-            Intent intent;
-            if (isForTransaction) {
-                intent = new Intent(activity, CreateTransactionActivity.class);
-            } else {
-                intent = new Intent(activity, EditCategoryActivity.class);
-            }
-            intent.putExtra("categoryId", categoryId);
-            activity.startActivity(intent);
-        });
+        if (onClickListener != null) {
+            holder.itemView.setOnClickListener(v -> onClickListener.onClick(category.getId()));
+        }
     }
 
     public void setOnClickListener(OnClickListener onClickListener) {
@@ -85,4 +73,5 @@ public class CategoryAdapter extends ListAdapter<Category, CategoryAdapter.Categ
             textViewCategoryName = itemView.findViewById(R.id.textViewCategoryName);
         }
     }
+
 }

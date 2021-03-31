@@ -1,11 +1,15 @@
 package com.example.p3175.activity.main;
 
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,7 +21,10 @@ import android.widget.TextView;
 
 import com.example.p3175.activity.base.BaseFragment;
 import com.example.p3175.R;
+import com.example.p3175.activity.transaction.EditTransactionActivity;
+import com.example.p3175.adapter.OnClickListener;
 import com.example.p3175.adapter.TransactionAdapter;
+import com.example.p3175.db.DatabaseHelper;
 import com.example.p3175.db.entity.Overview;
 import com.example.p3175.db.entity.RecurringTransaction;
 import com.example.p3175.db.entity.Transaction;
@@ -29,7 +36,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
 
-@RequiresApi(api = Build.VERSION_CODES.O)
+
 public class ExpenseTrackerFragment extends BaseFragment {
     TransactionAdapter adapter;
 
@@ -57,10 +64,59 @@ public class ExpenseTrackerFragment extends BaseFragment {
 
         //region 1. BOTTOM HALF: RECYCLER VIEW FOR LIST
 
-        adapter = new TransactionAdapter(activity, db);
+        adapter = new TransactionAdapter(db);
+        adapter.setOnClickListener(id -> {
+            Intent intent = new Intent(activity, EditTransactionActivity.class);
+            intent.putExtra(activity.getString(R.string.transaction_id), id);
+            activity.startActivity(intent);
+        });
+
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
         //endregion
+
+        //region 2 SWIPE TO DELETE
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(
+                0, ItemTouchHelper.START | ItemTouchHelper.END) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView,
+                                  @NonNull RecyclerView.ViewHolder viewHolder,
+                                  @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                new AlertDialog.Builder(activity)
+                        .setTitle("Delete?")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            Transaction itemToDelete = adapter.getCurrentList().get(viewHolder.getAdapterPosition());
+
+                            // db update: overview
+                            Calculator.updateIncomesSavings(currentOverview, itemToDelete.getAmount().negate());
+                            // FIXME: 3/29/2021 
+                            if (LocalDate.now().equals(itemToDelete.getDate())){
+                                
+                            }
+                            db.updateOverview(currentOverview);
+
+                            // db delete: transaction
+                            db.delete(DatabaseHelper.TABLE_TRANSACTION, itemToDelete.getId());
+
+                            // refresh overview & list
+                            refreshOverview();
+                            adapter.submitList(db.listTransactionsByUserId(currentUserId));
+                        })
+                        .setNegativeButton("No",
+                                (dialog, which) -> adapter.notifyItemChanged(viewHolder.getAdapterPosition()))
+                        .create()
+                        .show();
+            }
+        }).attachToRecyclerView(recyclerView);
+        //endregion
+
+
     }
 
     @Override
@@ -73,9 +129,10 @@ public class ExpenseTrackerFragment extends BaseFragment {
         LocalDate lastLoginDate = lastLoginDateString.isEmpty()
                 ? LocalDate.now()
                 : Converter.stringToLocalDate(lastLoginDateString);
+        assert lastLoginDate != null;
 
         // if login in a new day (first login / login on another day)
-        if (!lastLoginDate.equals(LocalDate.now())) {
+        if (!LocalDate.now().equals(lastLoginDate)) {
 
             // 1. check recurring transactions between last login date (exclusive) & today (inclusive)
 
@@ -136,12 +193,11 @@ public class ExpenseTrackerFragment extends BaseFragment {
         //endregion
 
 
-
         // refresh recycler view
         adapter.submitList(db.listTransactionsByUserId(currentUserId));
     }
 
-    private void refreshOverview(){
+    private void refreshOverview() {
         textViewIncome.setText(Converter.bigDecimalToString(currentOverview.getIncomes()));
         textViewSavings.setText(Converter.bigDecimalToString(currentOverview.getSavings()));
         textViewTodayAllowed.setText(Converter.bigDecimalToString(currentOverview.getTodayAllowed()));

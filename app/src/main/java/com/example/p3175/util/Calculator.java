@@ -10,7 +10,7 @@ import com.example.p3175.db.entity.Overview;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@RequiresApi(api = Build.VERSION_CODES.O)
+
 public class Calculator {
 
     /**
@@ -105,7 +105,7 @@ public class Calculator {
      */
     public static void updateTodayRemainingAllowed(Overview overview, BigDecimal amount) {
         if (amount.compareTo(BigDecimal.ZERO) < 0) {
-            // INCOME
+            // EXPENSE
 
             BigDecimal todayRemaining = overview.getTodayRemaining();
 
@@ -114,7 +114,7 @@ public class Calculator {
             overview.setTodayRemaining(todayRemaining);
 
         } else {
-            // EXPENSE
+            // INCOME: NOT MAKING ANY CHANGES TO AVOID INCORRECT INCOME NUMBER
 
             BigDecimal incomes = overview.getIncomes();
             BigDecimal todayRemaining = overview.getTodayRemaining();
@@ -123,9 +123,9 @@ public class Calculator {
             int remainingDaysThisMonth = today.lengthOfMonth() - today.getDayOfMonth() + 1;
 
             // re-calculate today's allowed and adjust today's remaining
-            BigDecimal newTodayAllowed = incomes.divide(new BigDecimal(remainingDaysThisMonth), 2, BigDecimal.ROUND_HALF_UP);
-            overview.setTodayAllowed(newTodayAllowed);
-            overview.setTodayRemaining(todayRemaining.add(newTodayAllowed.subtract(todayAllowed)));
+//            BigDecimal newTodayAllowed = incomes.divide(new BigDecimal(remainingDaysThisMonth), 2, BigDecimal.ROUND_HALF_UP);
+//            overview.setTodayAllowed(newTodayAllowed);
+//            overview.setTodayRemaining(todayRemaining.add(newTodayAllowed.subtract(todayAllowed)));
         }
     }
 

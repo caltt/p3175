@@ -1,6 +1,7 @@
 package com.example.p3175.activity.transaction;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
@@ -13,6 +14,7 @@ import androidx.annotation.RequiresApi;
 
 import com.example.p3175.R;
 import com.example.p3175.activity.base.BaseActivity;
+import com.example.p3175.activity.main.MainActivity;
 import com.example.p3175.db.entity.Category;
 import com.example.p3175.db.entity.Transaction;
 import com.example.p3175.util.Calculator;
@@ -21,7 +23,7 @@ import com.example.p3175.util.Converter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@RequiresApi(api = Build.VERSION_CODES.O)
+
 public class EditTransactionActivity extends BaseActivity {
 
     private LocalDate datePickerDate;
@@ -111,7 +113,9 @@ public class EditTransactionActivity extends BaseActivity {
             db.updateOverview(currentOverview);
 
             // nav back
-            onBackPressed();
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         });
         //endregion
     }

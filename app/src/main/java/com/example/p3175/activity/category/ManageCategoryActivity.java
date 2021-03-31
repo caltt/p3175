@@ -10,10 +10,12 @@ import android.os.Bundle;
 
 import com.example.p3175.R;
 import com.example.p3175.activity.base.BaseActivity;
+import com.example.p3175.activity.transaction.CreateTransactionActivity;
 import com.example.p3175.adapter.CategoryAdapter;
+import com.example.p3175.adapter.OnClickListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-@RequiresApi(api = Build.VERSION_CODES.O)
+
 public class ManageCategoryActivity extends BaseActivity {
 
     CategoryAdapter adapterIncome, adapterExpense;
@@ -32,8 +34,16 @@ public class ManageCategoryActivity extends BaseActivity {
 
         //region 1. RECYCLER VIEW
 
-        adapterIncome = new CategoryAdapter(this,  false);
-        adapterExpense = new CategoryAdapter(this,  false);
+        adapterIncome = new CategoryAdapter();
+        adapterExpense = new CategoryAdapter();
+        OnClickListener onClickListener = id -> {   // onclick handler
+            Intent intent = new Intent(this, EditCategoryActivity.class);
+            intent.putExtra(getString(R.string.category_id), id);
+            startActivity(intent);
+        };
+        adapterIncome.setOnClickListener(onClickListener);
+        adapterExpense.setOnClickListener(onClickListener);
+
         recyclerViewIncome.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewExpense.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewIncome.setAdapter(adapterIncome);

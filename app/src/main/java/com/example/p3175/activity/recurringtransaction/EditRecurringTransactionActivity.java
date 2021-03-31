@@ -17,7 +17,7 @@ import com.example.p3175.util.Converter;
 
 import java.math.BigDecimal;
 
-@RequiresApi(api = Build.VERSION_CODES.O)
+
 public class EditRecurringTransactionActivity extends BaseActivity {
 
     @Override

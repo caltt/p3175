@@ -13,7 +13,6 @@ import com.example.p3175.R;
 import com.example.p3175.activity.base.BaseActivity;
 import com.example.p3175.adapter.UserAdapter;
 
-@RequiresApi(api = Build.VERSION_CODES.O)
 public class ManageUserActivity extends BaseActivity {
     UserAdapter adapter;
 

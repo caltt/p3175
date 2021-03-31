@@ -21,13 +21,12 @@ import com.example.p3175.activity.base.BaseActivity;
 import com.example.p3175.db.entity.BigExpense;
 import com.example.p3175.util.Converter;
 
-@RequiresApi(api = Build.VERSION_CODES.O)
+
 public class BigExpenseAdapter extends ListAdapter<BigExpense, BigExpenseAdapter.BigExpenseViewHolder> {
     OnClickListener onClickListener;
-    Activity activity;
     boolean isForPlan;
 
-    public BigExpenseAdapter(Activity activity, boolean isForPlan) {
+    public BigExpenseAdapter(boolean isForPlan) {
         super(new DiffUtil.ItemCallback<BigExpense>() {
             @Override
             public boolean areItemsTheSame(@NonNull BigExpense oldItem, @NonNull BigExpense newItem) {
@@ -39,7 +38,6 @@ public class BigExpenseAdapter extends ListAdapter<BigExpense, BigExpenseAdapter
                 return oldItem.equals(newItem);
             }
         });
-        this.activity = activity;
         this.isForPlan = isForPlan;
     }
 
@@ -67,17 +65,10 @@ public class BigExpenseAdapter extends ListAdapter<BigExpense, BigExpenseAdapter
         holder.textViewLoan.setText(Converter.bigDecimalToString(bigExpense.getLoanNeeded()));
         holder.textViewDescription.setText(bigExpense.getDescription());
 
-        holder.itemView.setOnClickListener(v -> {
-            new AlertDialog.Builder(activity)
-                    .setTitle("Choose this plan?")
-                    .setPositiveButton("Yes", (dialog, which) -> {
-                        onClickListener.onClick(bigExpense);
-                    })
-                    .setNegativeButton("No", (dialog, which) -> {
-                    })
-                    .create()
-                    .show();
-        });
+        if (onClickListener != null) {
+            holder.itemView.setOnClickListener(v -> onClickListener.onClick(bigExpense));
+        }
+
     }
 
     public void setOnClickListener(OnClickListener onClickListener) {

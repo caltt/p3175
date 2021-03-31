@@ -10,7 +10,7 @@ import android.widget.EditText;
 import com.example.p3175.R;
 import com.example.p3175.activity.base.BaseActivity;
 
-@RequiresApi(api = Build.VERSION_CODES.O)
+
 public class EditBigExpenseActivity extends BaseActivity {
 
     @Override

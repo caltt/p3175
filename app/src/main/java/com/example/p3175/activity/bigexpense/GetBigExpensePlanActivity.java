@@ -4,6 +4,7 @@ import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,7 +25,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@RequiresApi(api = Build.VERSION_CODES.O)
+
 public class GetBigExpensePlanActivity extends BaseActivity {
 
     private BigExpenseAdapter adapter;
@@ -56,20 +57,30 @@ public class GetBigExpensePlanActivity extends BaseActivity {
 
         //region 3. RECYCLER VIEW
 
-        adapter = new BigExpenseAdapter(this, true);
-        adapter.setOnClickListener(bigExpense -> {
-            Log.d(TAG, "onClick: bige" + bigExpense.getAmount().toPlainString() + " " + bigExpense.getIncomeNeeded().toPlainString());
-            // db insert: big expense
-            db.insertBigExpense(bigExpense);
+        adapter = new BigExpenseAdapter(true);
+        adapter.setOnClickListener(new BigExpenseAdapter.OnClickListener() {
+            @Override
+            public void onClick(BigExpense bigExpense) {
+                new AlertDialog.Builder(GetBigExpensePlanActivity.this)
+                        .setTitle("Choose this plan?")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            // db insert: big expense
+                            db.insertBigExpense(bigExpense);
 
-            // db update: overview
-            Calculator.updateIncomesSavings(currentOverview, bigExpense.getIncomeNeeded(), bigExpense.getSavingNeeded());
-            db.updateOverview(currentOverview);
+                            // db update: overview
+                            Calculator.updateIncomesSavings(currentOverview, bigExpense.getIncomeNeeded(), bigExpense.getSavingNeeded());
+                            db.updateOverview(currentOverview);
 
-            // nav back
-            Intent intent = new Intent(GetBigExpensePlanActivity.this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
+                            // nav back
+                            Intent intent = new Intent(GetBigExpensePlanActivity.this, MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            GetBigExpensePlanActivity.this.startActivity(intent);
+                        })
+                        .setNegativeButton("No", (dialog, which) -> {
+                        })
+                        .create()
+                        .show();
+            }
         });
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);

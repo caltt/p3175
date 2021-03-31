@@ -12,7 +12,7 @@ import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
-@RequiresApi(api = Build.VERSION_CODES.O)
+
 public class Converter {
 
     private static MessageDigest messageDigest;
@@ -59,24 +59,6 @@ public class Converter {
 
     public static String localDateToString(LocalDate date) {
         return date == null ? null : date.toString();
-    }
-    //endregion
-
-
-    //region FOR DB ARGUMENTS
-
-    /**
-     * Convert a couple of Strings to String[] for argument
-     */
-    public static String[] toArgs(String... strings) {
-        return strings;
-    }
-
-    /**
-     * Convert int to String[] for argument
-     */
-    public static String[] toArgs(int id) {
-        return new String[]{String.valueOf(id)};
     }
     //endregion
 

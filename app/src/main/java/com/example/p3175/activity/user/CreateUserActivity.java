@@ -1,13 +1,7 @@
 package com.example.p3175.activity.user;
 
-import androidx.annotation.RequiresApi;
-
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,12 +15,13 @@ import com.example.p3175.db.entity.User;
 import com.example.p3175.util.Converter;
 
 import java.math.BigDecimal;
+import java.util.regex.Pattern;
 
-@RequiresApi(api = Build.VERSION_CODES.O)
+
 public class CreateUserActivity extends BaseActivity {
 
-    private boolean isEmailValid;
-    private boolean isPasswordValid;
+//    private boolean isEmailValid;
+//    private boolean isPasswordValid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,62 +37,93 @@ public class CreateUserActivity extends BaseActivity {
         EditText editTextOldPassword = findViewById(R.id.editTextEditUserOldPassword);
         editTextOldPassword.setVisibility(View.GONE);
         Button buttonOK = findViewById(R.id.buttonEditUserOK);
-        buttonOK.setEnabled(false);
+//        buttonOK.setEnabled(false);
         //endregion
 
-        //region 1. VALIDATE INPUT
+//        //region 1. VALIDATE INPUT
+//
+//        isEmailValid = false;
+//        isPasswordValid = false;
+//
+//        // validate email
+//        editTextEmail.addTextChangedListener(new TextWatcher() {
+//
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                isEmailValid = !editTextEmail.getText().toString().isEmpty();
+//
+//                buttonOK.setEnabled(isEmailValid && isPasswordValid);
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//
+//            }
+//        });
+//
+//        // validate password
+//        TextWatcher textWatcher = new TextWatcher() {
+//            String password, verifyPassword;
+//
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                password = editTextPassword.getText().toString();
+//                verifyPassword = editTextVerifyPassword.getText().toString();
+//                isPasswordValid = password.length() >= 4 && password.equals(verifyPassword);
+//                buttonOK.setEnabled(isEmailValid && isPasswordValid);
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//
+//            }
+//        };
+//        editTextPassword.addTextChangedListener(textWatcher);
+//        editTextVerifyPassword.addTextChangedListener(textWatcher);
+//
+//        //endregion
 
-        isEmailValid = false;
-        isPasswordValid = false;
+        //region 1. VALIDATE
 
-        // validate email
-        editTextEmail.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                isEmailValid = !editTextEmail.getText().toString().isEmpty();
-
-                buttonOK.setEnabled(isEmailValid && isPasswordValid);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
+        editTextEmail.setOnFocusChangeListener((v, hasFocus) -> {
+            String txtEmail = editTextEmail.getText().toString();
+            if (!hasFocus) {
+                if (txtEmail.isEmpty()) {
+                    editTextEmail.setError("Email cannot be blank.");
+                } else if (!isEmailValid(txtEmail)) {
+                    editTextEmail.setError("Please enter valid email address.");
+                }
 
             }
         });
 
-        // validate password
-        TextWatcher textWatcher = new TextWatcher() {
-            String password, verifyPassword;
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+        editTextPassword.setOnFocusChangeListener((v, hasFocus) -> {
+            String txtPassword = editTextPassword.getText().toString();
+            if (!hasFocus) {
+                if (txtPassword.isEmpty()) {
+                    editTextPassword.setError("Password cannot be blank.");
+                }
             }
+        });
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                password = editTextPassword.getText().toString();
-                verifyPassword = editTextVerifyPassword.getText().toString();
-                isPasswordValid = password.length() >= 4 && password.equals(verifyPassword);
-                buttonOK.setEnabled(isEmailValid && isPasswordValid);
+        editTextVerifyPassword.setOnFocusChangeListener((v, hasFocus) -> {
+            String txtVerifyPassword = editTextVerifyPassword.getText().toString();
+            if (!hasFocus) {
+                if (txtVerifyPassword.isEmpty()) {
+                    editTextVerifyPassword.setError("Verify password cannot be blank.");
+                }
             }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        };
-        editTextPassword.addTextChangedListener(textWatcher);
-        editTextVerifyPassword.addTextChangedListener(textWatcher);
-
-        //endregion
-
+        });
         //region 2. BUTTON
 
         buttonOK.setOnClickListener(v -> {
@@ -113,14 +139,16 @@ public class CreateUserActivity extends BaseActivity {
             } else {
                 // email doesn't exist
 
-                // db insert
+                // db insert: email
                 db.insertUser(new User(email, Converter.toMd5(password)));
                 int userId = db.selectUserByEmail(email).getId();
+
+                // db insert: overview
                 db.insertOverview(new Overview(userId, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO));
 
                 // if previous activity is manage user activity (admin), mark "need change password" in shard pref
                 if (getIntent().getBooleanExtra("isCreatedByAdmin", false)) {
-                    editor.putBoolean(getString(R.string.need_change_password) + userId, true).apply();
+                    editor.putBoolean(getString(R.string.need_change_password) + userId, true).commit();
                 }
 
                 // nav to initialize money activity, hide keyboard
@@ -130,9 +158,16 @@ public class CreateUserActivity extends BaseActivity {
                 startActivity(intent);
             }
 
-
         });
         //endregion
+    }
 
+    private boolean isEmailValid(String email) {
+        return Pattern.compile("^(([\\w-]+\\.)+[\\w-]+|([a-zA-Z]{1}|[\\w-]{2,}))@"
+                + "((([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
+                + "[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\."
+                + "([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
+                + "[0-9]{1,2}|25[0-5]|2[0-4][0-9])){1}|"
+                + "([a-zA-Z]+[\\w-]+\\.)+[a-zA-Z]{2,4})$").matcher(email).matches();
     }
 }

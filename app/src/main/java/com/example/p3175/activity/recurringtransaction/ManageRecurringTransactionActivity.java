@@ -16,11 +16,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.p3175.R;
 import com.example.p3175.activity.base.BaseActivity;
+import com.example.p3175.adapter.OnClickListener;
 import com.example.p3175.adapter.RecurringTransactionAdapter;
 import com.example.p3175.db.DatabaseHelper;
 import com.example.p3175.db.entity.RecurringTransaction;
 
-@RequiresApi(api = Build.VERSION_CODES.O)
+
 public class ManageRecurringTransactionActivity extends BaseActivity {
 
     RecurringTransactionAdapter adapterIncome, adapterBill;
@@ -38,8 +39,16 @@ public class ManageRecurringTransactionActivity extends BaseActivity {
 
         //region 1. RECYCLER VIEW
 
-        adapterIncome = new RecurringTransactionAdapter(this);
-        adapterBill = new RecurringTransactionAdapter(this);
+        adapterIncome = new RecurringTransactionAdapter();
+        adapterBill = new RecurringTransactionAdapter();
+        OnClickListener onClickListener = recurringTransactionId -> {
+            Intent intent = new Intent(this, EditRecurringTransactionActivity.class);
+            intent.putExtra(getString(R.string.recurring_transaction_id), recurringTransactionId);
+            startActivity(intent);
+        };
+        adapterIncome.setOnClickListener(onClickListener);
+        adapterBill.setOnClickListener(onClickListener);
+
         recyclerViewIncome.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewBill.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewIncome.setAdapter(adapterIncome);

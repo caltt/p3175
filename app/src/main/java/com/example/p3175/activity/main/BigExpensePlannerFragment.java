@@ -17,7 +17,7 @@ import com.example.p3175.R;
 import com.example.p3175.activity.base.BaseFragment;
 import com.example.p3175.adapter.BigExpenseAdapter;
 
-@RequiresApi(api = Build.VERSION_CODES.O)
+
 public class BigExpensePlannerFragment extends BaseFragment {
     BigExpenseAdapter adapter;
 
@@ -32,8 +32,8 @@ public class BigExpensePlannerFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        //region RECYCLER VIEW
-        adapter = new BigExpenseAdapter(activity, false);
+        // RECYCLER VIEW
+        adapter = new BigExpenseAdapter(false);
         RecyclerView recyclerView = activity.findViewById(R.id.recyclerViewBigExpense);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
         recyclerView.setAdapter(adapter);
@@ -44,6 +44,7 @@ public class BigExpensePlannerFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
 
+        // REFRESH LIST
         adapter.submitList(db.listBigExpensesByUserId(currentUserId));
     }
 

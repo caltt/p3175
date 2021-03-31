@@ -18,14 +18,15 @@ import com.example.p3175.R;
 import com.example.p3175.activity.transaction.EditTransactionActivity;
 import com.example.p3175.db.DatabaseHelper;
 import com.example.p3175.db.entity.Transaction;
+import com.example.p3175.util.Converter;
 
 import java.math.BigDecimal;
 
 public class TransactionAdapter extends ListAdapter<Transaction, TransactionAdapter.TransactionViewHolder> {
-    Activity activity;
     DatabaseHelper db;
+    OnClickListener onClickListener;
 
-    public TransactionAdapter(Activity activity, DatabaseHelper db){
+    public TransactionAdapter(DatabaseHelper db) {
         super(new DiffUtil.ItemCallback<Transaction>() {
             @Override
             public boolean areItemsTheSame(@NonNull Transaction oldItem, @NonNull Transaction newItem) {
@@ -38,9 +39,9 @@ public class TransactionAdapter extends ListAdapter<Transaction, TransactionAdap
             }
         });
 
-        this.activity = activity;
         this.db = db;
     }
+
     @NonNull
     @Override
     public TransactionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -52,7 +53,7 @@ public class TransactionAdapter extends ListAdapter<Transaction, TransactionAdap
         return new TransactionViewHolder(itemView);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
+
     @Override
     public void onBindViewHolder(@NonNull TransactionViewHolder holder, int position) {
         Transaction transaction = getItem(position);
@@ -60,21 +61,19 @@ public class TransactionAdapter extends ListAdapter<Transaction, TransactionAdap
         // set text
         holder.textViewTransactionCategory.setText(db.selectCategory(transaction.getCategoryId()).getName());
         holder.textViewTransactionDescription.setText(transaction.getDescription());
-        holder.textViewTransactionAmount.setText(
-                transaction.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString());
+        holder.textViewTransactionAmount.setText(Converter.bigDecimalToString(transaction.getAmount()));
 
-        // click to edit
-        holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(activity, EditTransactionActivity.class);
-            intent.putExtra(activity.getString(R.string.transaction_id), transaction.getId());
-            activity.startActivity(intent);
-        });
+        if (onClickListener != null) {
+            holder.itemView.setOnClickListener(v -> onClickListener.onClick(transaction.getId()));
+        }
+    }
+
+    public void setOnClickListener(OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
     }
 
     static class TransactionViewHolder extends RecyclerView.ViewHolder {
-        TextView textViewTransactionCategory,
-                textViewTransactionDescription,
-                textViewTransactionAmount;
+        TextView textViewTransactionCategory, textViewTransactionDescription, textViewTransactionAmount;
 
         public TransactionViewHolder(@NonNull View itemView) {
             super(itemView);

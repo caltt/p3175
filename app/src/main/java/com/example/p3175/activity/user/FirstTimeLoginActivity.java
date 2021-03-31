@@ -17,7 +17,7 @@ import com.example.p3175.activity.base.BaseActivity;
 import com.example.p3175.activity.main.MainActivity;
 import com.example.p3175.util.Converter;
 
-@RequiresApi(api = Build.VERSION_CODES.O)
+
 public class FirstTimeLoginActivity extends BaseActivity {
 
     @Override

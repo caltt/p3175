@@ -22,7 +22,7 @@ import com.example.p3175.util.Converter;
 import java.util.ArrayList;
 import java.util.List;
 
-@RequiresApi(api = Build.VERSION_CODES.O)
+
 @SuppressLint("DefaultLocale")
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static DatabaseHelper instance;
@@ -94,7 +94,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     public int delete(String table, int id) {
-        return writableDB.delete(table, "id = ?", Converter.toArgs(id));
+        return writableDB.delete(table, "id = ?", toArgs(id));
     }
     //endregion
 
@@ -131,9 +131,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public User selectUserByEmailPassword(String email, String password) {
-        String query = String.format("SELECT * FROM %s WHERE email = '%s' AND password = '%s'",
-                TABLE_USER, email, password);
-        Cursor cursor = readableDB.rawQuery(query, null);
+        String query = String.format("SELECT * FROM %s WHERE email = ? AND password = ?", TABLE_USER);
+        Cursor cursor = readableDB.rawQuery(query, toArgs(email, password));
         if (cursor.moveToNext()) {
             User result = new User(
                     cursor.getInt(0),
@@ -150,10 +149,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String query = String.format("SELECT * FROM %s", TABLE_USER);
         Cursor cursor = readableDB.rawQuery(query, null);
 
-        if (cursor.getCount() == 0) {
-            cursor.close();
-            return null;
-        }
+//        if (cursor.getCount() == 0) {
+//            cursor.close();
+//            return null;
+//        }
 
         List<User> results = new ArrayList<>();
         while (cursor.moveToNext()) {
@@ -177,7 +176,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(COLUMN_USER_EMAIL, user.getEmail());
         values.put(COLUMN_USER_PASSWORD, user.getPassword());
-        return writableDB.update(TABLE_USER, values, "id = ?", Converter.toArgs(user.getId()));
+        return writableDB.update(TABLE_USER, values, "id = ?", toArgs(user.getId()));
     }
     //endregion
 
@@ -236,7 +235,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_OVERVIEW_SAVINGS, Converter.bigDecimalToLong(overview.getSavings()));
         values.put(COLUMN_OVERVIEW_TODAY_ALLOWED, Converter.bigDecimalToLong(overview.getTodayAllowed()));
         values.put(COLUMN_OVERVIEW_TODAY_REMAINING, Converter.bigDecimalToLong(overview.getTodayRemaining()));
-        return writableDB.update(TABLE_OVERVIEW, values, "id = ?", Converter.toArgs(overview.getId()));
+        return writableDB.update(TABLE_OVERVIEW, values, "id = ?", toArgs(overview.getId()));
     }
     //endregion
 
@@ -260,10 +259,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String query = String.format("SELECT * FROM %s WHERE id != 1 AND is_income = %d", TABLE_CATEGORY, isIncome ? 1 : 0);
         Cursor cursor = readableDB.rawQuery(query, null);
 
-        if (cursor.getCount() == 0) {
-            cursor.close();
-            return null;
-        }
+//        if (cursor.getCount() == 0) {
+//            cursor.close();
+//            return null;
+//        }
 
         List<Category> results = new ArrayList<>();
         while (cursor.moveToNext()) {
@@ -287,7 +286,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(COLUMN_NAME, category.getName());
         values.put(COLUMN_CATEGORY_IS_INCOME, category.isIncome() ? 1 : 0);
-        return writableDB.update(TABLE_CATEGORY, values, "id = ?", Converter.toArgs(category.getId()));
+        return writableDB.update(TABLE_CATEGORY, values, "id = ?", toArgs(category.getId()));
     }
     //endregion
 
@@ -302,7 +301,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     cursor.getInt(2),
                     Converter.longToBigDecimal(cursor.getLong(3)),
                     Converter.stringToLocalDate(cursor.getString(4)),
-                    cursor.getString(2));
+                    cursor.getString(5));
             cursor.close();
             return result;
         }
@@ -311,13 +310,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public List<Transaction> listTransactionsByUserId(int userId) {
-        String query = String.format("SELECT * FROM %s WHERE user_id = %d ORDER BY date DESC", TABLE_TRANSACTION, userId);
+        String query = String.format("SELECT * FROM %s WHERE user_id = %d ORDER BY date DESC, id DESC", TABLE_TRANSACTION, userId);
         Cursor cursor = readableDB.rawQuery(query, null);
 
-        if (cursor.getCount() == 0) {
-            cursor.close();
-            return null;
-        }
+//        if (cursor.getCount() == 0) {
+//            cursor.close();
+//            return null;
+//        }
 
         List<Transaction> results = new ArrayList<>();
         while (cursor.moveToNext()) {
@@ -327,7 +326,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     cursor.getInt(2),
                     Converter.longToBigDecimal(cursor.getLong(3)),
                     Converter.stringToLocalDate(cursor.getString(4)),
-                    cursor.getString(2)));
+                    cursor.getString(5)));
         }
         cursor.close();
         return results;
@@ -338,14 +337,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public List<Transaction> listTransactionsByUserIdYearMonth(int userId, String yearMonth) {
         String query = String.format(
-                "SELECT * FROM %s WHERE user_id = %d AND date LIKE %s || '%'",
-                TABLE_TRANSACTION, userId, yearMonth);
+                "SELECT * FROM %s WHERE user_id = %d AND date LIKE '%s'",
+                TABLE_TRANSACTION, userId, yearMonth + "%");
         Cursor cursor = readableDB.rawQuery(query, null);
 
-        if (cursor.getCount() == 0) {
-            cursor.close();
-            return null;
-        }
+//        if (cursor.getCount() == 0) {
+//            cursor.close();
+//            return null;
+//        }
 
         List<Transaction> results = new ArrayList<>();
         while (cursor.moveToNext()) {
@@ -378,7 +377,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_AMOUNT, Converter.bigDecimalToLong(transaction.getAmount()));
         values.put(COLUMN_DATE, Converter.localDateToString(transaction.getDate()));
         values.put(COLUMN_DESCRIPTION, transaction.getDescription());
-        return writableDB.update(TABLE_TRANSACTION, values, "id = ?", Converter.toArgs(transaction.getId()));
+        return writableDB.update(TABLE_TRANSACTION, values, "id = ?", toArgs(transaction.getId()));
     }
     //endregion
 
@@ -405,10 +404,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 TABLE_RECURRING_TRANSACTION, userId, isIncome ? ">" : "<");
         Cursor cursor = readableDB.rawQuery(query, null);
 
-        if (cursor.getCount() == 0) {
-            cursor.close();
-            return null;
-        }
+//        if (cursor.getCount() == 0) {
+//            cursor.close();
+//            return null;
+//        }
 
         List<RecurringTransaction> results = new ArrayList<>();
         while (cursor.moveToNext()) {
@@ -432,10 +431,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 TABLE_RECURRING_TRANSACTION, userId, dayOfMonth);
         Cursor cursor = readableDB.rawQuery(query, null);
 
-        if (cursor.getCount() == 0) {
-            cursor.close();
-            return null;
-        }
+//        if (cursor.getCount() == 0) {
+//            cursor.close();
+//            return null;
+//        }
 
         List<RecurringTransaction> results = new ArrayList<>();
         while (cursor.moveToNext()) {
@@ -465,7 +464,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_AMOUNT, Converter.bigDecimalToLong(transaction.getAmount()));
         values.put(COLUMN_DAY_OF_MONTH, transaction.getDayOfMonth());
         values.put(COLUMN_DESCRIPTION, transaction.getDescription());
-        return writableDB.update(TABLE_RECURRING_TRANSACTION, values, "id = ?", Converter.toArgs(transaction.getId()));
+        return writableDB.update(TABLE_RECURRING_TRANSACTION, values, "id = ?", toArgs(transaction.getId()));
     }
     //endregion
 
@@ -490,15 +489,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return null;
     }
 
-    public List<BigExpense> listBigExpensesByUserId(int userId){
-        String query = String.format("SELECT * FROM %s WHERE user_id = %d ORDER BY id ASC",
+    public List<BigExpense> listBigExpensesByUserId(int userId) {
+        String query = String.format("SELECT * FROM %s WHERE user_id = %d ORDER BY date DESC, id DESC",
                 TABLE_BIG_EXPENSE, userId);
         Cursor cursor = readableDB.rawQuery(query, null);
 
-        if (cursor.getCount() == 0) {
-            cursor.close();
-            return null;
-        }
+//        if (cursor.getCount() == 0) {
+//            cursor.close();
+//            return null;
+//        }
 
         List<BigExpense> results = new ArrayList<>();
         while (cursor.moveToNext()) {
@@ -537,7 +536,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_BIG_EXPENSE_INCOMES_NEEDED, Converter.bigDecimalToLong(bigExpense.getIncomeNeeded()));
         values.put(COLUMN_BIG_EXPENSE_SAVINGS_NEEDED, Converter.bigDecimalToLong(bigExpense.getSavingNeeded()));
         values.put(COLUMN_BIG_EXPENSE_LOAN_NEEDED, Converter.bigDecimalToLong(bigExpense.getLoanNeeded()));
-        return writableDB.update(TABLE_BIG_EXPENSE, values, "id = ?", Converter.toArgs(bigExpense.getId()));
+        return writableDB.update(TABLE_BIG_EXPENSE, values, "id = ?", toArgs(bigExpense.getId()));
     }
     //endregion
 
@@ -644,7 +643,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.insert(TABLE_USER, null, values);
         values.clear();
 
-        values.put(COLUMN_NAME, "RECURRING");
+        values.put(COLUMN_NAME, "Recurring");
+        values.put(COLUMN_CATEGORY_IS_INCOME, 0);
+        db.insert(TABLE_CATEGORY, null, values);
+        values.clear();
+
+        values.put(COLUMN_NAME, "Extra income");
+        values.put(COLUMN_CATEGORY_IS_INCOME, 1);
+        db.insert(TABLE_CATEGORY, null, values);
+        values.clear();
+
+        values.put(COLUMN_NAME, "Entertainment");
+        values.put(COLUMN_CATEGORY_IS_INCOME, 0);
+        db.insert(TABLE_CATEGORY, null, values);
+        values.clear();
+
+        values.put(COLUMN_NAME, "Health");
+        values.put(COLUMN_CATEGORY_IS_INCOME, 0);
+        db.insert(TABLE_CATEGORY, null, values);
+        values.clear();
+
+        values.put(COLUMN_NAME, "Home");
+        values.put(COLUMN_CATEGORY_IS_INCOME, 0);
+        db.insert(TABLE_CATEGORY, null, values);
+        values.clear();
+
+        values.put(COLUMN_NAME, "Transportation");
         values.put(COLUMN_CATEGORY_IS_INCOME, 0);
         db.insert(TABLE_CATEGORY, null, values);
         values.clear();
@@ -662,6 +686,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(String.format("DROP TABLE IF EXISTS %s", TABLE_RECURRING_TRANSACTION));
         db.execSQL(String.format("DROP TABLE IF EXISTS %s", TABLE_BIG_EXPENSE));
         createTables(db);
+    }
+    //endregion
+
+    //region CONVERT ARGUMENTS
+
+    /**
+     * Convert a couple of objects to String[] for argument
+     */
+    public static String[] toArgs(Object... objects) {
+        String[] result = new String[objects.length];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = objects[i].toString();
+        }
+        return result;
+    }
+
+    /**
+     * Convert int to String[] for argument
+     */
+    public static String[] toArgs(int id) {
+        return new String[]{String.valueOf(id)};
     }
     //endregion
 }

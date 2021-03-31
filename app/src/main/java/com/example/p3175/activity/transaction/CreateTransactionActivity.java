@@ -23,7 +23,7 @@ import com.example.p3175.util.Converter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@RequiresApi(api = Build.VERSION_CODES.O)
+
 public class CreateTransactionActivity extends BaseActivity {
     LocalDate datePickerDate;
 
@@ -86,6 +86,7 @@ public class CreateTransactionActivity extends BaseActivity {
         //region 3. BUTTON
 
         buttonOK.setOnClickListener(v -> {
+            // gather input
             int categoryId = getIntent().getIntExtra("categoryId", -1);
             Category category = db.selectCategory(categoryId);
             assert category != null;
@@ -98,7 +99,7 @@ public class CreateTransactionActivity extends BaseActivity {
 
             // db update: overview
             Calculator.updateIncomesSavings(currentOverview, amount);
-            if (date.equals(LocalDate.now())) {     // if this transaction is today, update today's remaining
+            if (LocalDate.now().equals(date)) {     // if this transaction is today, update today's remaining
                 Calculator.updateTodayRemainingAllowed(currentOverview, amount);
             }
             db.updateOverview(currentOverview);

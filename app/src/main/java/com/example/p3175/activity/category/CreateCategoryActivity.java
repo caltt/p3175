@@ -14,7 +14,7 @@ import com.example.p3175.R;
 import com.example.p3175.activity.base.BaseActivity;
 import com.example.p3175.db.entity.Category;
 
-@RequiresApi(api = Build.VERSION_CODES.O)
+
 public class CreateCategoryActivity extends BaseActivity {
 
     @Override

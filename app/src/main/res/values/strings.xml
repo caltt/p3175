@@ -38,6 +38,7 @@
     <string name="menu_item_no_title"></string>
     <string name="menu_item_expense_tracker">Expense Tracker</string>
     <string name="menu_item_big_expense_planner">Big Expense Planner</string>
+    <string name="menu_item_home">Home</string>
     <string name="menu_item_category">Category</string>
     <string name="menu_item_salary_bill">Salary and Bill</string>
     <string name="menu_item_setting">Account</string>

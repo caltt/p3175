@@ -38,6 +38,7 @@
     <string name="menu_item_no_title"></string>
     <string name="menu_item_expense_tracker">Expense Tracker</string>
     <string name="menu_item_big_expense_planner">Big Expense Planner</string>
+    <string name="title_item_welcome">Welcome Back, Please Login</string>
     <string name="menu_item_home">Home</string>
     <string name="menu_item_category">Category</string>
     <string name="menu_item_salary_bill">Salary and Bill</string>
@@ -81,7 +82,7 @@
     <string name="button_text_add">Add</string>
     <string name="button_text_ok">OK</string>
     <string name="button_text_login">Login</string>
-    <string name="button_text_create_account">Create account</string>
+    <string name="button_text_create_account">SignUp</string>
     <string name="button_text_salary_bill">Manage Bill</string>
     <string name="radio_button_text_income">Income</string>
     <string name="radio_button_text_expense">Expense</string>

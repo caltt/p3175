@@ -3,6 +3,8 @@ package com.example.p3175.activity.user;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -27,7 +29,7 @@ public class LoginActivity extends BaseActivity {
 
         EditText editTextEmail = findViewById(R.id.editTextLoginEmail);
         EditText editTextPassword = findViewById(R.id.editTextLoginPassword);
-        TextView textViewCreateAccount = findViewById(R.id.textViewCreateAccount);
+        Button textViewCreateAccount = findViewById(R.id.textViewCreateAccount);
         Button buttonLogin = findViewById(R.id.buttonLogin);
         //endregion
 
@@ -89,15 +91,20 @@ public class LoginActivity extends BaseActivity {
 
         //region 3. CREATE ACCOUNT BUTTON
 
-        textViewCreateAccount.setOnClickListener(v -> {
-            // nav to edit user activity
-            Intent intent = new Intent(this, CreateUserActivity.class);
-            startActivity(intent);
+        textViewCreateAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // nav to edit user activity
+                Intent intent = new Intent(LoginActivity.this, CreateUserActivity.class);
+                startActivity(intent);
 
-            // hide the keyboard
-            inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                // hide the keyboard
+                inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+            }
         });
         //endregion
+
+
 
     }
 }

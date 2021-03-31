@@ -5,7 +5,10 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -14,6 +17,12 @@ import android.widget.TextView;
 
 import com.example.p3175.R;
 import com.example.p3175.activity.base.BaseActivity;
+import com.example.p3175.activity.category.ManageCategoryActivity;
+import com.example.p3175.activity.main.MainActivity;
+import com.example.p3175.activity.overview.AddSavingsActivity;
+import com.example.p3175.activity.recurringtransaction.ManageRecurringTransactionActivity;
+import com.example.p3175.activity.user.EditUserActivity;
+import com.example.p3175.activity.user.LoginActivity;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -129,5 +138,41 @@ public class ReportActivity extends BaseActivity {
 
     public TextView getTextViewTitle() {
         return textViewTitle;
+    }
+
+    // region. TOP RIGHT MENU
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int itemId = item.getItemId();
+
+        if (itemId == R.id.menuItemHome) {
+            startActivity(new Intent(this, MainActivity.class));
+        }else if (itemId == R.id.menuItemCategory) {
+            startActivity(new Intent(this, ManageCategoryActivity.class));
+        } else if (itemId == R.id.menuItemSalaryBill) {
+            startActivity(new Intent(this, ManageRecurringTransactionActivity.class));
+        } else if (itemId == R.id.menuItemAddSavings) {
+            startActivity(new Intent(this, AddSavingsActivity.class));
+        } else if (itemId == R.id.menuItemReport) {
+            startActivity(new Intent(this, ReportActivity.class));
+        } else if (itemId == R.id.menuItemAccount) {
+            startActivity(new Intent(this, EditUserActivity.class));
+        } else if (itemId == R.id.menuItemLogout) {
+            // remove logged in tag in the shared pref
+            editor.remove(getString(R.string.logged_in_user_id)).commit();
+
+            // nav to login activity, unable to nav back
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

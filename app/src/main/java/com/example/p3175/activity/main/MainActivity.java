@@ -119,7 +119,9 @@ public class MainActivity extends BaseActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int itemId = item.getItemId();
 
-        if (itemId == R.id.menuItemCategory) {
+        if (itemId == R.id.menuItemHome) {
+            startActivity(new Intent(this, MainActivity.class));
+        }else if (itemId == R.id.menuItemCategory) {
             startActivity(new Intent(this, ManageCategoryActivity.class));
         } else if (itemId == R.id.menuItemSalaryBill) {
             startActivity(new Intent(this, ManageRecurringTransactionActivity.class));

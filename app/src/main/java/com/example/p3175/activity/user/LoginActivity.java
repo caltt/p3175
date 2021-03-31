@@ -22,6 +22,7 @@ public class LoginActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         //region 0. VIEW
 
         EditText editTextEmail = findViewById(R.id.editTextLoginEmail);

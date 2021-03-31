@@ -252,7 +252,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return result;
         }
         cursor.close();
-        return null;
+        return new Category("uncategorized", false);
     }
 
     public List<Category> listCategories(boolean isIncome) {

@@ -52,5 +52,6 @@ public class BaseFragment extends Fragment {
         currentUserId = preferences.getInt(getString(R.string.logged_in_user_id), -1);
         currentUser = db.selectUser(currentUserId);
         currentOverview = db.selectOverviewByUserId(currentUserId);
+
     }
 }

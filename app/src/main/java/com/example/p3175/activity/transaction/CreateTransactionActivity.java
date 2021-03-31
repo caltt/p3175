@@ -44,6 +44,9 @@ public class CreateTransactionActivity extends BaseActivity {
         editTextCategory.setEnabled(false);
         editTextDate.setEnabled(false);
         buttonOK.setEnabled(false);
+
+        int categoryId = getIntent().getIntExtra("categoryId", -1);
+        editTextCategory.setText(db.selectCategory(categoryId).getName());
         //endregion
 
         //region 1. VALIDATE INPUT
@@ -87,7 +90,6 @@ public class CreateTransactionActivity extends BaseActivity {
 
         buttonOK.setOnClickListener(v -> {
             // gather input
-            int categoryId = getIntent().getIntExtra("categoryId", -1);
             Category category = db.selectCategory(categoryId);
             assert category != null;
             BigDecimal amount = Converter.stringToBigDecimal(editTextAmount.getText().toString());

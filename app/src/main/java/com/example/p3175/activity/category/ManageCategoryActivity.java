@@ -1,9 +1,13 @@
 package com.example.p3175.activity.category;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,7 +17,13 @@ import com.example.p3175.activity.base.BaseActivity;
 import com.example.p3175.activity.transaction.CreateTransactionActivity;
 import com.example.p3175.adapter.CategoryAdapter;
 import com.example.p3175.adapter.OnClickListener;
+import com.example.p3175.db.DatabaseHelper;
+import com.example.p3175.db.entity.Category;
+import com.example.p3175.db.entity.Transaction;
+import com.example.p3175.util.Calculator;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.time.LocalDate;
 
 
 public class ManageCategoryActivity extends BaseActivity {
@@ -50,7 +60,72 @@ public class ManageCategoryActivity extends BaseActivity {
         recyclerViewExpense.setAdapter(adapterExpense);
         //endregion
 
-        //region 2. BUTTON CREATE
+        //region 2. SWIPE DELETE
+
+        //region 2 SWIPE TO DELETE
+
+        Context context = this;
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(
+                0, ItemTouchHelper.START | ItemTouchHelper.END) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView,
+                                  @NonNull RecyclerView.ViewHolder viewHolder,
+                                  @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                new AlertDialog.Builder(context)
+                        .setTitle("Delete?")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            Category itemToDelete = adapterIncome.getCurrentList().get(viewHolder.getAdapterPosition());
+
+                            // db delete: transaction
+                            db.delete(DatabaseHelper.TABLE_CATEGORY, itemToDelete.getId());
+
+                            // refresh overview & list
+                            adapterIncome.submitList(db.listCategories(true));
+                        })
+                        .setNegativeButton("No",
+                                (dialog, which) -> adapterIncome.notifyItemChanged(viewHolder.getAdapterPosition()))
+                        .create()
+                        .show();
+            }
+        }).attachToRecyclerView(recyclerViewIncome);
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(
+                0, ItemTouchHelper.START | ItemTouchHelper.END) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView,
+                                  @NonNull RecyclerView.ViewHolder viewHolder,
+                                  @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                new AlertDialog.Builder(context)
+                        .setTitle("Delete?")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            Category itemToDelete = adapterExpense.getCurrentList().get(viewHolder.getAdapterPosition());
+
+                            // db delete: transaction
+                            db.delete(DatabaseHelper.TABLE_CATEGORY, itemToDelete.getId());
+
+                            // refresh overview & list
+                            adapterExpense.submitList(db.listCategories(false));
+                        })
+                        .setNegativeButton("No",
+                                (dialog, which) -> adapterExpense.notifyItemChanged(viewHolder.getAdapterPosition()))
+                        .create()
+                        .show();
+            }
+        }).attachToRecyclerView(recyclerViewExpense);
+
+        //endregion
+
+        //region 3. BUTTON CREATE
         buttonAdd.setOnClickListener(v -> {
             startActivity(new Intent(this, CreateCategoryActivity.class));
         });

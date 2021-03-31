@@ -45,6 +45,8 @@ public class BaseActivity extends AppCompatActivity {
         inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 
         getContextualData();
+
+        getSupportActionBar().setTitle("");
     }
 
     @Override

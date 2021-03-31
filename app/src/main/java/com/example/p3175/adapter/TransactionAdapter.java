@@ -1,26 +1,19 @@
 package com.example.p3175.adapter;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.p3175.R;
-import com.example.p3175.activity.transaction.EditTransactionActivity;
 import com.example.p3175.db.DatabaseHelper;
 import com.example.p3175.db.entity.Transaction;
 import com.example.p3175.util.Converter;
-
-import java.math.BigDecimal;
 
 public class TransactionAdapter extends ListAdapter<Transaction, TransactionAdapter.TransactionViewHolder> {
     DatabaseHelper db;
@@ -59,9 +52,10 @@ public class TransactionAdapter extends ListAdapter<Transaction, TransactionAdap
         Transaction transaction = getItem(position);
 
         // set text
-        holder.textViewTransactionCategory.setText(db.selectCategory(transaction.getCategoryId()).getName());
-        holder.textViewTransactionDescription.setText(transaction.getDescription());
-        holder.textViewTransactionAmount.setText(Converter.bigDecimalToString(transaction.getAmount()));
+        holder.textViewCategory.setText(db.selectCategory(transaction.getCategoryId()).getName());
+        holder.textViewDate.setText(Converter.localDateToString(transaction.getDate()));
+        holder.textViewDescription.setText(transaction.getDescription());
+        holder.textViewAmount.setText(Converter.bigDecimalToString(transaction.getAmount()));
 
         if (onClickListener != null) {
             holder.itemView.setOnClickListener(v -> onClickListener.onClick(transaction.getId()));
@@ -73,14 +67,15 @@ public class TransactionAdapter extends ListAdapter<Transaction, TransactionAdap
     }
 
     static class TransactionViewHolder extends RecyclerView.ViewHolder {
-        TextView textViewTransactionCategory, textViewTransactionDescription, textViewTransactionAmount;
+        TextView textViewCategory, textViewDate, textViewDescription, textViewAmount;
 
         public TransactionViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            textViewTransactionCategory = itemView.findViewById(R.id.textViewTransactionCategory);
-            textViewTransactionDescription = itemView.findViewById(R.id.textViewTransactionDescription);
-            textViewTransactionAmount = itemView.findViewById(R.id.textViewTransactionAmount);
+            textViewCategory = itemView.findViewById(R.id.textViewTransactionCategory);
+            textViewDate = itemView.findViewById(R.id.textViewTransactionDate);
+            textViewDescription = itemView.findViewById(R.id.textViewTransactionDescription);
+            textViewAmount = itemView.findViewById(R.id.textViewTransactionAmount);
         }
     }
 }

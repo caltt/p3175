@@ -44,17 +44,17 @@ public class UserAdapter extends ListAdapter<User, UserAdapter.UserViewHolder> {
         User user = getItem(position);
 
         // set text
-        holder.textViewUserId.setText(String.valueOf(position + 1));    // position in the list
-        holder.textViewUserEmail.setText(user.getEmail());
+        holder.textViewPosition.setText(String.valueOf(position + 1));    // position in the list
+        holder.textViewEmail.setText(user.getEmail());
     }
 
     static class UserViewHolder extends RecyclerView.ViewHolder {
-        TextView textViewUserId, textViewUserEmail;
+        TextView textViewPosition, textViewEmail;
 
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
-            textViewUserId = itemView.findViewById(R.id.textViewUserId);
-            textViewUserEmail = itemView.findViewById(R.id.textViewUserEmail);
+            textViewPosition = itemView.findViewById(R.id.textViewUserId);
+            textViewEmail = itemView.findViewById(R.id.textViewUserEmail);
         }
 
     }

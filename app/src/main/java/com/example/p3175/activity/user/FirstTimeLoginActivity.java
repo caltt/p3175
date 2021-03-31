@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.p3175.R;
 import com.example.p3175.activity.base.BaseActivity;
@@ -19,6 +20,9 @@ import com.example.p3175.util.Converter;
 
 
 public class FirstTimeLoginActivity extends BaseActivity {
+
+    private boolean isPasswordValid = false;
+    private boolean isVerifyPasswordValid = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,42 +45,50 @@ public class FirstTimeLoginActivity extends BaseActivity {
         //endregion
 
         //region 1. VALIDATE INPUT
-        TextWatcher textWatcher = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+        editTextPassword.setOnFocusChangeListener((v, hasFocus) -> {
+            String txtPassword = editTextPassword.getText().toString();
+            if (!hasFocus) {
+                if (txtPassword.isEmpty()) {
+                    editTextPassword.setError("Password cannot be blank.");
+                } else {
+                    isPasswordValid = true;
+                }
             }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                buttonOK.setEnabled(editTextPassword.getText().toString().length() >= 4
-                        && editTextPassword.getText().toString().equals(editTextVerifyPassword.getText().toString()));
+        });
+        editTextVerifyPassword.setOnFocusChangeListener((v, hasFocus) -> {
+            String txtVerifyPassword = editTextVerifyPassword.getText().toString();
+            if (!hasFocus) {
+                if (txtVerifyPassword.isEmpty()) {
+                    editTextVerifyPassword.setError("Verify password cannot be blank.");
+                } else {
+                    isVerifyPasswordValid = true;
+                }
             }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        };
-        editTextPassword.addTextChangedListener(textWatcher);
-        editTextVerifyPassword.addTextChangedListener(textWatcher);
-
+        });
         //endregion
 
         //region 2. BUTTON
 
         buttonOK.setOnClickListener(v -> {
-            // db update
-            currentUser.setPassword(Converter.toMd5(editTextPassword.getText().toString()));
-            db.updateUser(currentUser);
+            editTextPassword.clearFocus();
+            editTextVerifyPassword.clearFocus();
 
-            // remove the mark in the shared pref
-            editor.remove(getString(R.string.need_change_password) + currentUserId).apply();
+            if (!isPasswordValid || !isVerifyPasswordValid) {
+                Toast.makeText(this, "Please make sure all inputs are valid.", Toast.LENGTH_SHORT).show();
+            } else {
+                // db update
+                currentUser.setPassword(Converter.toMd5(editTextPassword.getText().toString()));
+                db.updateUser(currentUser);
 
-            // nav to main activity
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
+                // remove the mark in the shared pref
+                editor.remove(getString(R.string.need_change_password) + currentUserId).apply();
+
+                // nav to main activity
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
         });
         //endregion
     }

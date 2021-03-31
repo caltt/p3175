@@ -96,8 +96,8 @@ public class ExpenseTrackerFragment extends BaseFragment {
                             // db update: overview
                             Calculator.updateIncomesSavings(currentOverview, itemToDelete.getAmount().negate());
                             // FIXME: 3/29/2021 
-                            if (LocalDate.now().equals(itemToDelete.getDate())){
-                                
+                            if (LocalDate.now().equals(itemToDelete.getDate())) {
+
                             }
                             db.updateOverview(currentOverview);
 
@@ -136,6 +136,8 @@ public class ExpenseTrackerFragment extends BaseFragment {
 
             // 1. check recurring transactions between last login date (exclusive) & today (inclusive)
 
+            int pendingTransactionCount = 0;
+
             // get that period
             Period period = Period.between(lastLoginDate, LocalDate.now()); // start inclusive & end exclusive
             int duration = period.getDays();                                // still a correct number of days
@@ -148,6 +150,7 @@ public class ExpenseTrackerFragment extends BaseFragment {
                 date = lastLoginDate.plusDays(i);
                 List<RecurringTransaction> pendingTransactions
                         = db.listRecurringTransactionsByUserIdDayOfMonth(currentUserId, date.getDayOfMonth());
+                pendingTransactionCount += pendingTransactions.size();
 
                 // do transactions
                 if (pendingTransactions != null) {
@@ -163,6 +166,12 @@ public class ExpenseTrackerFragment extends BaseFragment {
                 }
             }
 
+            if (pendingTransactionCount != 0) {
+                new AlertDialog.Builder(activity)
+                        .setTitle(pendingTransactionCount + " transactions made for due bills")
+                        .setPositiveButton("OK", null)
+                        .create().show();
+            }
             // 2. update today available
 
             // reset today allowed

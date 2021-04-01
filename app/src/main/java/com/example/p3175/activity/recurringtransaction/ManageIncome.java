@@ -53,8 +53,7 @@ public class ManageIncome extends BaseActivity {
         //region 0. VIEW
 
         RecyclerView recyclerViewIncome = findViewById(R.id.recyclerViewIncome);
-        RecyclerView recyclerViewBill = findViewById(R.id.recycleViewBill);
-        FloatingActionButton buttonCreate = findViewById(R.id.buttonManageRecurringTransactionAdd);
+        Button buttonCreate = findViewById(R.id.btnAdd);
         Button buttonFinish = findViewById(R.id.btnFinish);
 
         //endregion
@@ -73,9 +72,7 @@ public class ManageIncome extends BaseActivity {
         adapterBill.setOnClickListener(onClickListener);
 
         recyclerViewIncome.setLayoutManager(new LinearLayoutManager(this));
-        recyclerViewBill.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewIncome.setAdapter(adapterIncome);
-        recyclerViewBill.setAdapter(adapterBill);
         //endregion
 
         //region 2. SWIPE DELETE
@@ -104,29 +101,6 @@ public class ManageIncome extends BaseActivity {
             }
         }).attachToRecyclerView(recyclerViewIncome);
 
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(
-                0, ItemTouchHelper.START | ItemTouchHelper.END) {
-            @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView,
-                                  @NonNull RecyclerView.ViewHolder viewHolder,
-                                  @NonNull RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                new AlertDialog.Builder(context)
-                        .setTitle("Delete?")
-                        .setPositiveButton("Yes", (dialog, which) -> {
-                            RecurringTransaction itemToDelete = adapterBill.getCurrentList().get(viewHolder.getAdapterPosition());
-                            db.delete(DatabaseHelper.TABLE_RECURRING_TRANSACTION, itemToDelete.getId());
-                        })
-                        .setNegativeButton("No",
-                                (dialog, which) -> adapterBill.notifyItemChanged(viewHolder.getAdapterPosition()))
-                        .create()
-                        .show();
-            }
-        }).attachToRecyclerView(recyclerViewBill);
         //endregion
 
         //region 3. BUTTON CREATE
@@ -139,7 +113,7 @@ public class ManageIncome extends BaseActivity {
         });
         //endregion
 
-        //region 3. BUTTON CREATE
+        //region 3. BUTTON finish
 
         buttonFinish.setOnClickListener(v -> {
             Toast.makeText(ManageIncome.this, "Account created", Toast.LENGTH_LONG).show();
@@ -157,42 +131,6 @@ public class ManageIncome extends BaseActivity {
 
         // refresh recycler view
         adapterIncome.submitList(db.listRecurringTransactionsByUserId(currentUserId, true));
-        adapterBill.submitList(db.listRecurringTransactionsByUserId(currentUserId, false));
-    }
 
-    // region. TOP RIGHT MENU
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int itemId = item.getItemId();
-
-        if (itemId == R.id.menuItemHome) {
-            startActivity(new Intent(this, MainActivity.class));
-        }else if (itemId == R.id.menuItemCategory) {
-            startActivity(new Intent(this, ManageCategoryActivity.class));
-        } else if (itemId == R.id.menuItemSalaryBill) {
-            startActivity(new Intent(this, ManageRecurringTransactionActivity.class));
-        } else if (itemId == R.id.menuItemAddSavings) {
-            startActivity(new Intent(this, AddSavingsActivity.class));
-        } else if (itemId == R.id.menuItemReport) {
-            startActivity(new Intent(this, ReportActivity.class));
-        } else if (itemId == R.id.menuItemAccount) {
-            startActivity(new Intent(this, EditUserActivity.class));
-        } else if (itemId == R.id.menuItemLogout) {
-            // remove logged in tag in the shared pref
-            editor.remove(getString(R.string.logged_in_user_id)).commit();
-
-            // nav to login activity, unable to nav back
-            Intent intent = new Intent(this, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }

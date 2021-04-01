@@ -53,6 +53,9 @@ public class InitializeMoneyActivity extends BaseActivity {
                 currentOverview.setSavings(Converter.stringToBigDecimal(savings));
                 db.updateOverview(currentOverview);
 
+                currentOverview.setIncomes(Converter.stringToBigDecimal(salary));
+                db.updateOverview(currentOverview);
+
                 // nav to main activity, unable to nav back
                 AlertDialog.Builder altdial = new AlertDialog.Builder(InitializeMoneyActivity.this);
                 altdial.setMessage("Do you want to add an additional income?")

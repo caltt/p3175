@@ -34,14 +34,7 @@ public class InitializeMoneyActivity extends BaseActivity {
         Button buttonOK = findViewById(R.id.buttonInitialOK);
         //endregion
 
-        //region 2. BUTTON
 
-//        buttonManageRecurringTransaction.setOnClickListener(v -> {
-//            // nav to manage salary & bill
-//            Intent intent = new Intent(this, ManageRecurringTransactionActivity.class);
-//            intent.putExtra(getString(R.string.current_user_id), currentUserId);
-//            startActivity(intent);
-//        });
 
         buttonOK.setOnClickListener(v -> {
             String salary = editTextSalary.getText().toString();

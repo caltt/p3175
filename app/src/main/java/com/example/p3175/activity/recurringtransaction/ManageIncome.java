@@ -106,7 +106,7 @@ public class ManageIncome extends BaseActivity {
         //region 3. BUTTON CREATE
 
         buttonCreate.setOnClickListener(v -> {
-            Intent intent = new Intent(this, CreateRecurringTransactionActivity.class);
+            Intent intent = new Intent(this, AddIncome.class);
             intent.putExtra(getString(R.string.current_user_id), currentUserId);
             startActivity(intent);
 

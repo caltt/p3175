@@ -10,14 +10,15 @@
         android:id="@+id/editTextInitialSalary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
         android:autofillHints=""
         android:ems="10"
         android:fontFamily="sans-serif-condensed"
         android:gravity="center"
         android:hint="@string/hint_salary"
         android:inputType="numberDecimal"
-        app:layout_constraintBottom_toTopOf="@+id/editTextInitialSavings"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewInitializeUserTitle" />
 
@@ -25,6 +26,7 @@
         android:id="@+id/editTextInitialSavings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="44dp"
         android:autofillHints=""
         android:ems="10"
         android:fontFamily="sans-serif-condensed"
@@ -32,6 +34,7 @@
         android:hint="@string/hint_current_savings"
         android:inputType="numberDecimal"
         app:layout_constraintEnd_toEndOf="@+id/editTextInitialSalary"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/editTextInitialSalary"
         app:layout_constraintTop_toBottomOf="@+id/editTextInitialSalary" />
 
@@ -71,12 +74,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.4" />
+        app:layout_constraintGuide_begin="293dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline42"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.15" />
+        app:layout_constraintGuide_begin="110dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

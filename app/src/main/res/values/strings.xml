@@ -63,6 +63,7 @@
     <string name="title_choose_big_expense_plan">Choose a plan</string>
     <string name="title_add_savings">Add savings</string>
     <string name="title_report">Report for %1$s</string>
+    <string name="title_addIncome">Additional Income</string>
 
     <!--    label text-->
     <string name="label_current_incomes">Current incomes</string>

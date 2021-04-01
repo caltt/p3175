@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.P3175">
-        <activity android:name=".activity.recurringtransaction.ManageIncome"></activity>
+        <activity android:name=".activity.recurringtransaction.AddIncome"></activity>
+        <activity android:name=".activity.recurringtransaction.ManageIncome" />
         <activity android:name=".activity.overview.AddSavingsActivity" />
         <activity android:name=".activity.bigexpense.GetBigExpensePlanActivity" />
         <activity android:name=".activity.recurringtransaction.CreateRecurringTransactionActivity" />

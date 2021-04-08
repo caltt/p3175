@@ -42,10 +42,10 @@ public class InitializeMoneyActivity extends BaseActivity {
         //endregion
 
 
-
         buttonOK.setOnClickListener(v -> {
             String salary = editTextSalary.getText().toString();
             String savings = editTextSavings.getText().toString();
+
 
             // db insert: recurring transaction
             if (!salary.isEmpty()&&!savings.isEmpty()) {
@@ -56,7 +56,11 @@ public class InitializeMoneyActivity extends BaseActivity {
                         "Salary"
                 ));
 
+
                 // db update: overview
+                currentOverview.setTodayRemaining(Converter.stringToBigDecimal(salary));
+                db.updateOverview(currentOverview);
+
                 currentOverview.setSavings(Converter.stringToBigDecimal(savings));
                 db.updateOverview(currentOverview);
 
